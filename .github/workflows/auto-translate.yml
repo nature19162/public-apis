@@ -1,0 +1,39 @@
+name: 自动翻译 README 到中文
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'README.md'  # 只有README.md变化才触发
+  workflow_dispatch: # 手动触发
+
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v3
+
+    - name: 设置 Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+
+    - name: 安装依赖
+      run: npm install openai
+
+    - name: 运行翻译脚本
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      run: |
+        node translate.js
+
+    - name: 提交翻译结果
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add README.zh.md
+        git commit -m "自动翻译 README 到中文" || echo "No changes to commit"
+        git push
+
