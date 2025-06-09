@@ -56,14 +56,17 @@ title: 公共 API 中文版
 
 <header>
   <h1>🌏 公共 API 中文文档</h1>
-  <a class="language-switch" href="./README.md">English</a>
+  <!-- 切换到英文主页，假设英文主页是index.html -->
+  <a class="language-switch" href="index.html" title="Switch to English">English</a>
 </header>
 
 欢迎访问本项目的中文版本页面。本页面内容由 GitHub Actions 自动翻译生成。  
 你可以查看：
 
-- 📄 [英文原始文档](./README.md)
-- 🇨🇳 [中文翻译文档](./README.zh.md)
+- 📄 [英文原始文档 (README.md)](https://github.com/nature19162/public-apis/blob/main/README.md)
+- 🇨🇳 [中文翻译文档 (README.zh.md)](https://github.com/nature19162/public-apis/blob/main/README.zh.md)
+
+> ⚠️ 本页面内容由 AI 自动翻译，仅供参考，具体请以英文原始文档为准。
 
 ---
 
