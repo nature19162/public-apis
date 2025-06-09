@@ -1,35 +1,36 @@
-name: Auto Translate README
+name: 自动翻译 README 到中文
 
 on:
   push:
-    branches:
-      - main
-    paths:
-      - 'README.md'
+    branches: [main]
+    paths: [README.md]
   workflow_dispatch:
 
 jobs:
   translate:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+    - name: 检出代码
+      uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
+    - name: 设置 Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
 
-      - name: Install dependencies
-        run: npm install google-translate-open-api
+    - name: 安装 openai 依赖
+      run: npm install openai
 
-      - name: Run translation script
-        run: node translate.js
+    - name: 执行翻译脚本
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      run: node translate.js
 
-      - name: Commit translated README
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add README.zh.md
-          git commit -m "自动翻译 README 到中文" || echo "No changes"
-          git push origin main
+    - name: 提交翻译结果
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add README.zh.md
+        git commit -m "自动翻译 README 到中文" || echo "No changes to commit"
+        git push
