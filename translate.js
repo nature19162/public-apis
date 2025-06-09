@@ -1,47 +1,31 @@
-// translate.js
-const fs = require('fs');
-const path = require('path');
-const { Configuration, OpenAIApi } = require('openai');
+import { OpenAI } from 'openai';
+import fs from 'fs';
+import path from 'path';
 
-// 初始化 OpenAI API
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY, // 在 GitHub Actions 中设置这个变量
 });
-const openai = new OpenAIApi(configuration);
 
-// 读取 README.md 内容
-const readmePath = path.resolve(__dirname, 'README.md');
-const content = fs.readFileSync(readmePath, 'utf-8');
-
-// 将内容按段落拆分，防止请求过大
-const segments = content.split('\n\n').filter(Boolean);
-
-// 翻译函数
 async function translateText(text) {
-  const prompt = `请将以下内容翻译为简体中文：\n\n${text}`;
-  const response = await openai.createChatCompletion({
-    model: 'gpt-3.5-turbo',
-    messages: [{ role: 'user', content: prompt }],
+  const completion = await openai.chat.completions.create({
+    model: "gpt-4",
+    messages: [
+      { role: "system", content: "你是一个翻译助手，请将以下英文文本翻译成简体中文，保留格式、Markdown和代码块。" },
+      { role: "user", content: text }
+    ]
   });
-  return response.data.choices[0].message.content.trim();
+
+  return completion.choices[0].message.content;
 }
 
-// 执行翻译流程
-(async () => {
-  let translated = '';
-  for (const segment of segments) {
-    console.log('正在翻译一段内容...');
-    try {
-      const result = await translateText(segment);
-      translated += result + '\n\n';
-    } catch (err) {
-      console.error('翻译失败：', err.message);
-      translated += '[翻译失败的段落略过]\n\n';
-    }
-  }
+async function main() {
+  const readmePath = path.resolve('./README.md');
+  const zhPath = path.resolve('./README.zh.md');
+  const content = fs.readFileSync(readmePath, 'utf8');
 
-  // 写入翻译后的文件
-  const outputPath = path.resolve(__dirname, 'README.zh.md');
-  fs.writeFileSync(outputPath, translated, 'utf-8');
-  console.log('翻译完成，已保存为 README.zh.md');
-})();
+  const translated = await translateText(content);
+  fs.writeFileSync(zhPath, translated, 'utf8');
+  console.log('翻译完成！README.zh.md 已生成');
+}
+
+main().catch(console.error);
