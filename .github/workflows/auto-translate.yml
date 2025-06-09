@@ -19,11 +19,11 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install google-translate-open-api
+      - name: Install dependencies
         run: npm install google-translate-open-api
 
-      - name: Run translation script
-        run: node .github/workflows/translate.js
+      - name: Run translation
+        run: node translate.js
 
       - name: Commit translated file
         run: |
