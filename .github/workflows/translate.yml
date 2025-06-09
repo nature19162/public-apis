@@ -1,0 +1,36 @@
+name: Translate README
+
+on:
+  push:
+    paths:
+      - README.md
+
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install OpenAI Translator CLI
+        run: npm install -g openai-translator
+
+      - name: Translate README.md to Chinese
+        run: |
+          openai-translator -i README.md -o README.zh.md -t zh
+
+      - name: Commit translated file
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.zh.md
+          git commit -m "🤖 自动翻译 README.md 到 README.zh.md"
+          git push
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
