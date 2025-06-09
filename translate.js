@@ -1,9 +1,9 @@
-import { OpenAI } from 'openai';
-import fs from 'fs';
-import path from 'path';
+const OpenAI = require('openai').OpenAI;
+const fs = require('fs');
+const path = require('path');
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY, // 在 GitHub Actions 中设置这个变量
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 async function translateText(text) {
