@@ -1,23 +1,20 @@
-// translate.js
-const fs = require('fs');
-const translate = require('google-translate-open-api').default;
+const fs = require("fs");
+const { default: translate } = require("google-translate-open-api");
 
-(async () => {
-  try {
-    const readme = fs.readFileSync('README.md', 'utf8');
+async function run() {
+  const input = fs.readFileSync("README.md", "utf8");
 
-    const result = await translate(readme, {
-      tld: 'cn',
-      to: 'zh-CN',
-    });
+  const result = await translate(input, {
+    tld: "cn",
+    to: "zh-CN",
+  });
 
-    const translated = result.data[0];
-    fs.writeFileSync('README.zh.md', translated, 'utf8');
+  const translated = result.data[0];
+  fs.writeFileSync("README.zh.md", translated);
+  console.log("README 已翻译为中文并保存为 README.zh.md");
+}
 
-    console.log('✅ 翻译完成，已生成 README.zh.md');
-  } catch (error) {
-    console.error('❌ 翻译失败:', error);
-    process.exit(1);
-  }
-})();
-
+run().catch((err) => {
+  console.error("翻译失败：", err);
+  process.exit(1);
+});
