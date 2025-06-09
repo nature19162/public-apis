@@ -2,8 +2,10 @@ name: Auto Translate README
 
 on:
   push:
+    branches:
+      - main
     paths:
-      - "README.md"
+      - 'README.md'
   workflow_dispatch:
 
 jobs:
@@ -19,16 +21,16 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install translation dependency
+      - name: Install dependencies
         run: npm install google-translate-open-api
 
-      - name: Run translation script
-        run: node translate.js
+      - name: Run translation
+        run: node .github/translate.js
 
       - name: Commit translated file
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
           git add README.zh.md
-          git commit -m "自动翻译 README 到中文" || echo "无需提交"
+          git commit -m "自动翻译 README 到中文" || echo "No changes"
           git push origin main
